@@ -899,23 +899,40 @@ function initSidebarToggle() {
 
   let touchStartX = 0;
   let touchCurrentX = 0;
+  let touchStartY = 0;
+  let touchCurrentY = 0;
+  let isTrackingSidebarSwipe = false;
 
   document.addEventListener('touchstart', (event) => {
-    if (!event.touches || !event.touches.length) return;
+    if (!event.touches || !event.touches.length || !isMobileSidebarMode()) return;
     touchStartX = event.touches[0].clientX;
     touchCurrentX = touchStartX;
+    touchStartY = event.touches[0].clientY;
+    touchCurrentY = touchStartY;
+    const sidebarOpen = els.sidebar.classList.contains('open');
+    const edgeSwipe = touchStartX < 24;
+    isTrackingSidebarSwipe = sidebarOpen || edgeSwipe;
   }, { passive: true });
 
   document.addEventListener('touchmove', (event) => {
-    if (!event.touches || !event.touches.length) return;
+    if (!event.touches || !event.touches.length || !isTrackingSidebarSwipe) return;
     touchCurrentX = event.touches[0].clientX;
+    touchCurrentY = event.touches[0].clientY;
   }, { passive: true });
 
+  document.addEventListener('touchcancel', () => {
+    isTrackingSidebarSwipe = false;
+  });
+
   document.addEventListener('touchend', () => {
-    if (!isMobileSidebarMode()) return;
+    if (!isMobileSidebarMode() || !isTrackingSidebarSwipe) return;
     const dx = touchCurrentX - touchStartX;
-    if (touchStartX < 24 && dx > 60 && !els.sidebar.classList.contains('open')) openSidebar();
-    if (dx < -60 && els.sidebar.classList.contains('open')) closeSidebar();
+    const dy = touchCurrentY - touchStartY;
+    const isMostlyHorizontal = Math.abs(dx) > Math.abs(dy);
+    const sidebarOpen = els.sidebar.classList.contains('open');
+    if (isMostlyHorizontal && touchStartX < 24 && dx > 60 && !sidebarOpen) openSidebar();
+    if (isMostlyHorizontal && dx < -60 && sidebarOpen) closeSidebar();
+    isTrackingSidebarSwipe = false;
   });
 
   window.addEventListener('resize', () => {
