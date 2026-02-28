@@ -29,14 +29,17 @@
         <a href="#study">Study</a>
         <a href="#analytics">Analytics</a>
         <a href="#settings">Settings</a>
+        <a href="#" id="notificationToggle">Notifications <span id="notificationCount" class="count-badge">0</span></a>
         <a href="#" id="logoutBtn">Logout</a>
       </nav>
+      <section class="notification-panel hidden" id="notificationPanel" aria-label="Notification history"></section>
     </aside>
+    <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
 
     <div class="shell" id="dashboard">
-      <header class="glass topbar slide-fade">
+      <header class="glass topbar section-enter">
         <div class="topbar-left">
-          <button id="sidebarToggle" class="btn btn-secondary mobile-only" type="button" aria-label="Toggle sidebar">☰</button>
+          <button id="sidebarToggle" class="btn btn-secondary mobile-only" type="button" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar">☰</button>
           <div>
             <p class="eyebrow">Daily Focus System</p>
             <h1>Student Productivity Dashboard Pro</h1>
@@ -61,11 +64,34 @@
         </div>
       </div>
 
-      <section class="stats-grid slide-fade" aria-label="Dashboard statistics">
+      <section class="stats-grid section-enter" aria-label="Dashboard statistics">
         <article class="glass stat-card"><p>Total Assignments</p><h2 data-stat="totalAssignments">0</h2></article>
         <article class="glass stat-card"><p>Overdue</p><h2 data-stat="overdueAssignments">0</h2></article>
         <article class="glass stat-card"><p>Weekly Study Hours</p><h2 data-stat="weeklyHours">0</h2></article>
         <article class="glass stat-card"><p>Current Streak</p><h2 data-stat="streak">0</h2></article>
+      </section>
+
+      <section class="intelligence-row section-enter">
+        <article class="glass panel">
+          <div class="panel-header"><h3>Productivity Intelligence</h3><p>AI-like snapshot of your study system.</p></div>
+          <div class="score-layout">
+            <div class="score-ring-wrap">
+              <svg viewBox="0 0 120 120">
+                <circle class="ring-bg" cx="60" cy="60" r="50"></circle>
+                <circle id="scoreRing" class="ring-progress" cx="60" cy="60" r="50"></circle>
+              </svg>
+              <strong id="scoreText">0</strong>
+            </div>
+            <div>
+              <p id="scoreSummary">Score evaluates completion, consistency, streak, and goals.</p>
+              <button class="btn btn-small" id="shareProgressBtn" type="button">Share Snapshot</button>
+            </div>
+          </div>
+        </article>
+        <article class="glass panel hidden" id="burnoutCard">
+          <div class="panel-header"><h3>Burnout Alert</h3><p id="burnoutText">You're showing signs of overload.</p></div>
+          <button class="btn" type="button" id="burnoutCtaBtn">Start Focus Sprint</button>
+        </article>
       </section>
 
       <section class="layout-grid">
@@ -81,12 +107,11 @@
             <button type="submit" id="assignmentSubmit" class="btn" disabled>Add Assignment</button>
           </form>
           <div class="assignment-tools">
-            <input type="search" id="assignmentSearch" placeholder="Search by title or subject" />
+            <input type="search" id="assignmentSearch" placeholder="Search by title or subject" aria-label="Search assignments" />
             <select id="assignmentFilter" aria-label="Filter assignments">
               <option value="all">All</option><option value="upcoming">Upcoming</option><option value="overdue">Overdue</option><option value="high">High Priority</option><option value="completed">Completed</option>
             </select>
           </div>
-
           <div id="assignmentSkeleton" class="skeleton-wrap"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
           <div id="assignmentList" class="assignment-list" aria-live="polite"></div>
           <div class="pagination-row" id="paginationRow"></div>
@@ -125,13 +150,22 @@
               </div>
             </div>
           </div>
+          <article class="glass badge-card">
+            <h4>Achievements</h4>
+            <div id="badgeList" class="badge-list"></div>
+          </article>
         </article>
 
         <article class="glass panel" id="analytics">
-          <div class="panel-header"><h3>Analytics + Insights 2.0</h3><p>See patterns and act faster.</p></div>
-          <div id="analyticsSkeleton" class="skeleton-wrap"><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+          <div class="panel-header"><h3>Advanced Analytics</h3><p>Completion, monthly trend, and subject balance.</p></div>
+          <div id="analyticsSkeleton" class="skeleton-wrap"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
           <div id="analyticsContent" class="hidden">
             <div class="chart-wrap"><canvas id="studyChart" aria-label="Weekly study hour chart"></canvas></div>
+            <div class="chart-grid">
+              <div class="chart-wrap"><canvas id="completionChart" aria-label="Completion rate chart"></canvas></div>
+              <div class="chart-wrap"><canvas id="monthlyChart" aria-label="Monthly comparison chart"></canvas></div>
+              <div class="chart-wrap"><canvas id="subjectRadarChart" aria-label="Subject balance chart"></canvas></div>
+            </div>
             <div id="insightsPanel" class="insights-panel"></div>
             <h4 class="heatmap-title">Study Heatmap (Last 12 Weeks)</h4>
             <div id="studyHeatmap" class="heatmap-grid"></div>
@@ -156,34 +190,28 @@
       <footer class="glass footer">Student Productivity Dashboard Pro — Crafted by Rohit Dixit</footer>
     </div>
 
+    <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+      <a href="#dashboard">Home</a>
+      <a href="#assignments">Tasks</a>
+      <a href="#study">Study</a>
+      <a href="#analytics">Charts</a>
+      <a href="#settings">Settings</a>
+    </nav>
+
     <button id="mobileAddBtn" class="mobile-add-btn" type="button">+ Add Assignment</button>
     <canvas id="confettiCanvas" aria-hidden="true"></canvas>
 
     <div class="modal-backdrop hidden" id="checkInModal" role="dialog" aria-modal="true" aria-labelledby="checkInTitle">
-      <div class="modal-card glass">
-        <h3 id="checkInTitle">Daily Check-In</h3>
-        <p>Did you complete your study today?</p>
-        <button id="confirmCheckInBtn" class="btn" type="button">Yes, I did ✅</button>
-      </div>
+      <div class="modal-card glass"><h3 id="checkInTitle">Daily Check-In</h3><p>Did you complete your study today?</p><button id="confirmCheckInBtn" class="btn" type="button">Yes, I did ✅</button></div>
     </div>
-
     <div class="modal-backdrop hidden" id="levelUpModal" role="dialog" aria-modal="true" aria-labelledby="levelUpTitle">
-      <div class="modal-card glass">
-        <h3 id="levelUpTitle">Level Up!</h3>
-        <p id="levelUpText">You reached a new level.</p>
-        <button id="closeLevelUpBtn" class="btn" type="button">Awesome</button>
-      </div>
+      <div class="modal-card glass"><h3 id="levelUpTitle">Level Up!</h3><p id="levelUpText">You reached a new level.</p><button id="closeLevelUpBtn" class="btn" type="button">Awesome</button></div>
     </div>
-
+    <div class="modal-backdrop hidden" id="badgeModal" role="dialog" aria-modal="true" aria-labelledby="badgeTitle">
+      <div class="modal-card glass"><h3 id="badgeTitle">Achievement Unlocked</h3><p id="badgeText">New badge earned.</p><button id="closeBadgeBtn" class="btn" type="button">Great</button></div>
+    </div>
     <div class="modal-backdrop hidden" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
-      <div class="modal-card glass">
-        <h3 id="shareTitle">Share Progress</h3>
-        <div id="shareCard" class="share-card"></div>
-        <div class="settings-actions">
-          <button id="copyShareBtn" class="btn" type="button">Copy Share Link</button>
-          <button id="downloadShareBtn" class="btn btn-secondary" type="button">Download Card</button>
-        </div>
-      </div>
+      <div class="modal-card glass"><h3 id="shareTitle">Share Progress</h3><div id="shareCard" class="share-card"></div><div class="settings-actions"><button id="copyShareBtn" class="btn" type="button">Copy Share Link</button><button id="downloadShareBtn" class="btn btn-secondary" type="button">Download Card</button></div></div>
     </div>
 
     <div id="toastContainer" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
