@@ -784,6 +784,14 @@ function trackReferral() {
 }
 
 function initLazyAnalytics() {
+  if (typeof window.IntersectionObserver !== 'function') {
+    state.analyticsReady = true;
+    els.analyticsSkeleton.classList.add('hidden');
+    els.analyticsContent.classList.remove('hidden');
+    renderCharts(); renderHeatmap(); updateInsights();
+    return;
+  }
+
   const observer = new IntersectionObserver((entries) => {
     if (!entries.some((e) => e.isIntersecting) || state.analyticsReady) return;
     state.analyticsReady = true;
@@ -893,11 +901,13 @@ function initSidebarToggle() {
   let touchCurrentX = 0;
 
   document.addEventListener('touchstart', (event) => {
+    if (!event.touches || !event.touches.length) return;
     touchStartX = event.touches[0].clientX;
     touchCurrentX = touchStartX;
   }, { passive: true });
 
   document.addEventListener('touchmove', (event) => {
+    if (!event.touches || !event.touches.length) return;
     touchCurrentX = event.touches[0].clientX;
   }, { passive: true });
 
