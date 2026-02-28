@@ -39,7 +39,7 @@
     <div class="shell" id="dashboard">
       <header class="glass topbar section-enter">
         <div class="topbar-left">
-          <button id="sidebarToggle" class="btn btn-secondary mobile-only" type="button" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar">☰</button>
+          <button id="sidebarToggle" class="btn btn-secondary mobile-only" type="button" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar"><span class="burger"><span></span><span></span><span></span></span></button>
           <div>
             <p class="eyebrow">Daily Focus System</p>
             <h1>Student Productivity Dashboard Pro</h1>
@@ -56,6 +56,11 @@
         </div>
       </header>
 
+      <section class="glass greeting-card section-enter" id="greetingCard" aria-live="polite">
+        <h3 id="greetingText">🔥 Welcome back, Champion.</h3>
+        <p id="leaderboardHint">You're in the top 10% of users.</p>
+      </section>
+
       <div id="installBanner" class="install-banner glass hidden" role="region" aria-label="Install app banner">
         <span>Install this app for quick offline access.</span>
         <div>
@@ -71,6 +76,8 @@
         <article class="glass stat-card"><p>Current Streak</p><h2 data-stat="streak">0</h2></article>
       </section>
 
+      <section class="glass streak-pressure section-enter" id="streakPressure">🔥 Rohit, don't break the chain!</section>
+
       <section class="intelligence-row section-enter">
         <article class="glass panel">
           <div class="panel-header"><h3>Productivity Intelligence</h3><p>AI-like snapshot of your study system.</p></div>
@@ -83,10 +90,18 @@
               <strong id="scoreText">0</strong>
             </div>
             <div>
-              <p id="scoreSummary">Score evaluates completion, consistency, streak, and goals.</p>
+              <p id="scoreSummary">Score evaluates completion, consistency, streak, and goals.</p><p id="rankTitle">Rank: Rookie</p>
               <button class="btn btn-small" id="shareProgressBtn" type="button">Share Snapshot</button>
             </div>
           </div>
+        </article>
+        <article class="glass panel" id="patternCard">
+          <div class="panel-header"><h3>Time Pattern</h3><p id="patternText">Analyzing your productive windows…</p></div>
+          <p id="goalConfidenceText">Goal confidence: --%</p>
+        </article>
+        <article class="glass panel" id="battleCard">
+          <div class="panel-header"><h3>Today's Challenge for Rohit</h3><p id="battleText">Complete 2 missions • Study 1h • Protect streak</p></div>
+          <p id="battleRewardText">Bonus: +20 XP on full clear</p>
         </article>
         <article class="glass panel hidden" id="burnoutCard">
           <div class="panel-header"><h3>Burnout Alert</h3><p id="burnoutText">You're showing signs of overload.</p></div>
@@ -96,7 +111,7 @@
 
       <section class="layout-grid">
         <article class="glass panel" id="assignments">
-          <div class="panel-header"><h3>Assignment Workflow</h3><p>Plan, prioritize, complete.</p></div>
+          <div class="panel-header"><h3>Mission Control</h3><p>Plan, prioritize, complete.</p></div>
           <form id="assignmentForm" class="form-grid" novalidate>
             <label>Assignment Title <input type="text" id="assignmentTitle" maxlength="80" required /></label>
             <label>Subject Name <input type="text" id="subjectName" maxlength="80" required /></label>
@@ -165,7 +180,10 @@
               <div class="chart-wrap"><canvas id="completionChart" aria-label="Completion rate chart"></canvas></div>
               <div class="chart-wrap"><canvas id="monthlyChart" aria-label="Monthly comparison chart"></canvas></div>
               <div class="chart-wrap"><canvas id="subjectRadarChart" aria-label="Subject balance chart"></canvas></div>
+              <div class="chart-wrap"><canvas id="trend30Chart" aria-label="30 day productivity trend"></canvas></div>
+              <div class="chart-wrap"><canvas id="distributionChart" aria-label="completion time distribution chart"></canvas></div>
             </div>
+            <p id="velocityText" class="heatmap-title">Assignment velocity: -- tasks/week</p>
             <div id="insightsPanel" class="insights-panel"></div>
             <h4 class="heatmap-title">Study Heatmap (Last 12 Weeks)</h4>
             <div id="studyHeatmap" class="heatmap-grid"></div>
@@ -178,6 +196,7 @@
             <label>Weekly Study Goal (hours) <input type="number" min="1" max="100" step="1" id="weeklyGoalInput" required /></label>
             <label>Accent Color <input type="color" id="accentColorInput" value="#6d8dff" /></label>
             <label class="toggle-row">Enable Notifications <input type="checkbox" id="notificationsToggle" checked /></label>
+            <label class="toggle-row">Success Sound <input type="checkbox" id="successSoundToggle" /></label>
             <button type="submit" class="btn">Save Settings</button>
           </form>
           <div class="settings-actions">
@@ -187,7 +206,26 @@
         </article>
       </section>
 
-      <footer class="glass footer">Student Productivity Dashboard Pro — Crafted by Rohit Dixit</footer>
+      <div class="footer-divider" aria-hidden="true"></div>
+      <footer class="glass footer" aria-label="Creator contact">
+        <p class="footer-brand">Student Productivity Dashboard Pro — Crafted by Rohit Dixit</p>
+        <p class="footer-collab">Open for collaboration &amp; project discussions</p>
+        <p class="footer-owner">Owner LinkedIn Profile</p>
+        <a
+          class="footer-linkedin"
+          href="https://www.linkedin.com/in/rohit-dixit-224013366"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit Rohit Dixit LinkedIn profile"
+        >
+          <span class="linkedin-photo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M20.45 20.45h-3.56V14.9c0-1.32-.03-3.02-1.84-3.02-1.85 0-2.13 1.44-2.13 2.93v5.64H9.36V9h3.42v1.56h.05c.48-.9 1.64-1.84 3.38-1.84 3.62 0 4.29 2.38 4.29 5.48v6.25ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.56V9h3.56v11.45Z" fill="currentColor" />
+            </svg>
+          </span>
+          <span>Rohit Dixit</span>
+        </a>
+      </footer>
     </div>
 
     <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
@@ -213,6 +251,26 @@
     <div class="modal-backdrop hidden" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
       <div class="modal-card glass"><h3 id="shareTitle">Share Progress</h3><div id="shareCard" class="share-card"></div><div class="settings-actions"><button id="copyShareBtn" class="btn" type="button">Copy Share Link</button><button id="downloadShareBtn" class="btn btn-secondary" type="button">Download Card</button></div></div>
     </div>
+
+    
+    <div class="modal-backdrop hidden" id="weeklyReviewModal" role="dialog" aria-modal="true" aria-labelledby="weeklyReviewTitle">
+      <div class="modal-card glass">
+        <h3 id="weeklyReviewTitle">Weekly Auto Review</h3>
+        <div id="weeklyReviewBody"></div>
+        <button id="closeWeeklyReviewBtn" class="btn" type="button">Close</button>
+      </div>
+    </div>
+
+    
+    <div class="modal-backdrop hidden" id="levelOverlay" role="dialog" aria-modal="true" aria-labelledby="levelOverlayTitle">
+      <div class="modal-card glass level-overlay-card">
+        <h2 id="levelOverlayTitle">LEVEL UP</h2>
+        <p id="levelOverlayText">LEVEL UP Rohit! You reached a new level!</p>
+        <button id="closeLevelOverlayBtn" class="btn" type="button">Continue</button>
+      </div>
+    </div>
+
+    <div id="missionFlash" class="mission-flash hidden" aria-hidden="true">Mission Cleared +10 XP</div>
 
     <div id="toastContainer" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
     <div id="xpFloatLayer" class="xp-float-layer" aria-hidden="true"></div>
