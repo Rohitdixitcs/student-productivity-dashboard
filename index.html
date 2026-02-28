@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1020" />
+    <title>Student Productivity Dashboard Pro — Crafted by Rohit Dixit</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <div class="bg-orb orb-1" aria-hidden="true"></div>
+    <div class="bg-orb orb-2" aria-hidden="true"></div>
+    <div class="bg-orb orb-3" aria-hidden="true"></div>
+
+    <aside class="sidebar glass" id="sidebar">
+      <div class="sidebar-brand">
+        <p>Productivity OS</p>
+        <strong>Rohit Dixit</strong>
+      </div>
+      <nav class="sidebar-nav" aria-label="Sidebar navigation">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#assignments">Assignments</a>
+        <a href="#study">Study</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#settings">Settings</a>
+        <a href="#" id="logoutBtn">Logout</a>
+      </nav>
+    </aside>
+
+    <div class="shell" id="dashboard">
+      <header class="glass topbar slide-fade">
+        <div class="topbar-left">
+          <button id="sidebarToggle" class="btn btn-secondary mobile-only" type="button" aria-label="Toggle sidebar">☰</button>
+          <div>
+            <p class="eyebrow">Daily Focus System</p>
+            <h1>Student Productivity Dashboard Pro</h1>
+            <p class="subtitle">Crafted by Rohit Dixit</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="level-badge" id="levelBadge">Lvl 1</span>
+          <div class="xp-wrap" aria-label="XP Progress">
+            <p>Level <span id="levelText">1</span> • XP <span id="xpText">0</span></p>
+            <div class="xp-track"><span id="xpBar"></span></div>
+          </div>
+          <button id="themeToggle" class="btn btn-secondary" type="button" aria-label="Toggle theme">Toggle Light Mode</button>
+        </div>
+      </header>
+
+      <div id="installBanner" class="install-banner glass hidden" role="region" aria-label="Install app banner">
+        <span>Install this app for quick offline access.</span>
+        <div>
+          <button id="installBtn" class="btn btn-small" type="button">Install</button>
+          <button id="dismissInstall" class="btn btn-small btn-secondary" type="button">Later</button>
+        </div>
+      </div>
+
+      <section class="stats-grid slide-fade" aria-label="Dashboard statistics">
+        <article class="glass stat-card"><p>Total Assignments</p><h2 data-stat="totalAssignments">0</h2></article>
+        <article class="glass stat-card"><p>Overdue</p><h2 data-stat="overdueAssignments">0</h2></article>
+        <article class="glass stat-card"><p>Weekly Study Hours</p><h2 data-stat="weeklyHours">0</h2></article>
+        <article class="glass stat-card"><p>Current Streak</p><h2 data-stat="streak">0</h2></article>
+      </section>
+
+      <section class="layout-grid">
+        <article class="glass panel" id="assignments">
+          <div class="panel-header"><h3>Assignment Workflow</h3><p>Plan, prioritize, complete.</p></div>
+          <form id="assignmentForm" class="form-grid" novalidate>
+            <label>Assignment Title <input type="text" id="assignmentTitle" maxlength="80" required /></label>
+            <label>Subject Name <input type="text" id="subjectName" maxlength="80" required /></label>
+            <label>Deadline Date <input type="date" id="deadlineDate" required /></label>
+            <label>Priority Level
+              <select id="priorityLevel"><option value="Low">Low</option><option value="Medium" selected>Medium</option><option value="High">High</option></select>
+            </label>
+            <button type="submit" id="assignmentSubmit" class="btn" disabled>Add Assignment</button>
+          </form>
+          <div class="assignment-tools">
+            <input type="search" id="assignmentSearch" placeholder="Search by title or subject" />
+            <select id="assignmentFilter" aria-label="Filter assignments">
+              <option value="all">All</option><option value="upcoming">Upcoming</option><option value="overdue">Overdue</option><option value="high">High Priority</option><option value="completed">Completed</option>
+            </select>
+          </div>
+
+          <div id="assignmentSkeleton" class="skeleton-wrap"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+          <div id="assignmentList" class="assignment-list" aria-live="polite"></div>
+          <div class="pagination-row" id="paginationRow"></div>
+          <div id="assignmentEmptyState" class="empty-state hidden"><span>📝</span><p>No assignments yet. Add your first deadline to begin.</p></div>
+        </article>
+
+        <article class="glass panel" id="study">
+          <div class="panel-header"><h3>Study + Focus</h3><p>Daily logging with momentum tracking.</p></div>
+          <form id="studyForm" class="form-grid" novalidate>
+            <label>Date <input type="date" id="studyDate" required /></label>
+            <label>Study Hours <input type="number" id="studyHours" min="0" max="24" step="0.25" required /></label>
+            <button type="submit" id="studySubmit" class="btn" disabled>Save Study Entry</button>
+          </form>
+          <div class="study-summary">
+            <p><strong>Last 7 Days:</strong> <span data-summary="weekly">0h</span></p>
+            <p><strong>Lifetime:</strong> <span data-summary="lifetime">0h</span></p>
+            <p><strong>Streak:</strong> <span data-summary="streak">0 days</span></p>
+          </div>
+          <div class="progress-focus-wrap">
+            <div class="glass mini-card" id="goalCard">
+              <p>Weekly Goal Progress</p>
+              <div class="progress-ring">
+                <svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"></circle><circle id="progressRing" class="ring-progress" cx="60" cy="60" r="50"></circle></svg>
+                <strong id="progressText">0%</strong>
+              </div>
+            </div>
+            <div class="glass mini-card">
+              <p>Focus Sprint Timer</p>
+              <div class="timer-ring-wrap">
+                <svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="50"></circle><circle id="timerRing" class="ring-progress" cx="60" cy="60" r="50"></circle></svg>
+                <h4 id="focusTime">25:00</h4>
+              </div>
+              <div class="focus-actions">
+                <button class="btn btn-small" id="focusStart" type="button">Start</button>
+                <button class="btn btn-small btn-secondary" id="focusReset" type="button">Reset</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="glass panel" id="analytics">
+          <div class="panel-header"><h3>Analytics + Insights 2.0</h3><p>See patterns and act faster.</p></div>
+          <div id="analyticsSkeleton" class="skeleton-wrap"><div class="skeleton-line"></div><div class="skeleton-line"></div></div>
+          <div id="analyticsContent" class="hidden">
+            <div class="chart-wrap"><canvas id="studyChart" aria-label="Weekly study hour chart"></canvas></div>
+            <div id="insightsPanel" class="insights-panel"></div>
+            <h4 class="heatmap-title">Study Heatmap (Last 12 Weeks)</h4>
+            <div id="studyHeatmap" class="heatmap-grid"></div>
+          </div>
+        </article>
+
+        <article class="glass panel" id="settings">
+          <div class="panel-header"><h3>Settings</h3><p>Personalize your productivity rhythm.</p></div>
+          <form id="settingsForm" class="form-grid" novalidate>
+            <label>Weekly Study Goal (hours) <input type="number" min="1" max="100" step="1" id="weeklyGoalInput" required /></label>
+            <label>Accent Color <input type="color" id="accentColorInput" value="#6d8dff" /></label>
+            <label class="toggle-row">Enable Notifications <input type="checkbox" id="notificationsToggle" checked /></label>
+            <button type="submit" class="btn">Save Settings</button>
+          </form>
+          <div class="settings-actions">
+            <button class="btn btn-secondary" id="exportDataBtn" type="button">Export Data (JSON)</button>
+            <button class="btn btn-danger" id="resetDataBtn" type="button">Reset Account Data</button>
+          </div>
+        </article>
+      </section>
+
+      <footer class="glass footer">Student Productivity Dashboard Pro — Crafted by Rohit Dixit</footer>
+    </div>
+
+    <button id="mobileAddBtn" class="mobile-add-btn" type="button">+ Add Assignment</button>
+    <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+    <div class="modal-backdrop hidden" id="checkInModal" role="dialog" aria-modal="true" aria-labelledby="checkInTitle">
+      <div class="modal-card glass">
+        <h3 id="checkInTitle">Daily Check-In</h3>
+        <p>Did you complete your study today?</p>
+        <button id="confirmCheckInBtn" class="btn" type="button">Yes, I did ✅</button>
+      </div>
+    </div>
+
+    <div class="modal-backdrop hidden" id="levelUpModal" role="dialog" aria-modal="true" aria-labelledby="levelUpTitle">
+      <div class="modal-card glass">
+        <h3 id="levelUpTitle">Level Up!</h3>
+        <p id="levelUpText">You reached a new level.</p>
+        <button id="closeLevelUpBtn" class="btn" type="button">Awesome</button>
+      </div>
+    </div>
+
+    <div class="modal-backdrop hidden" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+      <div class="modal-card glass">
+        <h3 id="shareTitle">Share Progress</h3>
+        <div id="shareCard" class="share-card"></div>
+        <div class="settings-actions">
+          <button id="copyShareBtn" class="btn" type="button">Copy Share Link</button>
+          <button id="downloadShareBtn" class="btn btn-secondary" type="button">Download Card</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+    <div id="xpFloatLayer" class="xp-float-layer" aria-hidden="true"></div>
+  </body>
+</html>
